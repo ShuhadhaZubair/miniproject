@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class UserProfile extends StatefulWidget {
   const UserProfile({super.key});
@@ -9,6 +10,17 @@ class UserProfile extends StatefulWidget {
 }
 
 class _UserProfileState extends State<UserProfile> {
+  Future<void> getdata()async {
+    SharedPreferences data =await SharedPreferences.getInstance();
+    final user = data.getString("userid");
+    print("$user data fetched");
+  }
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    getdata();
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -18,7 +30,10 @@ class _UserProfileState extends State<UserProfile> {
         children: [
           Padding(
             padding: const EdgeInsets.all(20),
-            child: Icon(Icons.arrow_back_ios),
+            child:IconButton(onPressed: () {
+              Navigator.pop(context);
+            }, icon: Icon(Icons.arrow_back_ios),)
+
           ),
         ],
       ),

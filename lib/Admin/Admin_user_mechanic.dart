@@ -86,40 +86,52 @@ class _UserState extends State<User> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        body: ListView.builder(
-      itemBuilder: (context, index) {
-        return ListTile(
-          title: Text(
-            "Name",
-            style: TextStyle(fontWeight: FontWeight.w500,fontSize: 16.sp),
-          ),
-          leading: CircleAvatar(
-            backgroundImage: AssetImage("man.jpg"),
-            radius: 26.r,
-          ),
-          subtitle: Row(mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              Column(crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text("Location", style: TextStyle(fontSize: 14.sp),),
-                  Text("Mobile", style: TextStyle(fontSize: 14.sp),),
-                  Text("Email", style: TextStyle(fontSize: 14.sp),)
-                ],
-              ),
-            ],
-          ),
-          onTap: () {
-            Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => AdminAddUser(),
-                ));
+        body: StreamBuilder(
+          stream: FirebaseFirestore.instance.collection("User").snapshots(),
+          builder: (context, snapshot) {
+            if(snapshot.connectionState==ConnectionState.waiting)return Center(child: CircularProgressIndicator());
+            else if(snapshot.hasError) return Text("Error ${snapshot.error}");
+            final user = snapshot.data?.docs??[];
+            return   ListView.builder(
+              itemBuilder: (context, index) {
+                var doc=user[index];
+                final _data = doc.data() as Map<String,dynamic>;
+
+                return ListTile(
+                  title: Text(
+                    _data["username"]??"",
+                    style: TextStyle(fontWeight: FontWeight.w500,fontSize: 18.sp),
+                  ),
+                  leading: CircleAvatar(
+                    backgroundImage: AssetImage("man.jpg"),
+                    radius: 26.r,
+                  ),
+                  subtitle: Row(mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      Column(crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(_data["location"]??"", style: TextStyle(fontSize: 16.sp),),
+                          Text(_data["phone"]??"", style: TextStyle(fontSize: 16.sp),),
+                          Text(_data["email"]??"", style: TextStyle(fontSize: 16.sp),)
+                        ],
+                      ),
+                    ],
+                  ),
+                  onTap: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => AdminAddUser(id:doc.id),
+                        ));
+                  },
+                  selectedTileColor: Colors.indigo,
+                );
+              },
+              itemCount: user.length,
+            );
           },
-          selectedTileColor: Colors.indigo,
-        );
-      },
-      itemCount: 10,
-    ));
+
+        ));
   }
 }
 
@@ -137,7 +149,7 @@ class _MechanicState extends State<Mechanic> {
         body:StreamBuilder(
           stream: FirebaseFirestore.instance.collection("mechanic").snapshots(),
           builder: (context, snapshot) {
-            if(snapshot.connectionState==ConnectionState.waiting) return CircularProgressIndicator();
+            if(snapshot.connectionState==ConnectionState.waiting) return Center(child: CircularProgressIndicator());
             else if (snapshot.hasError) return Text("Error ${snapshot.error}");
             final mech=snapshot.data?.docs??[];
             return     ListView.builder(
@@ -147,7 +159,7 @@ class _MechanicState extends State<Mechanic> {
                 return ListTile(
                   title: Text(_data["mechname"] ?? ""
                     ,
-                    style: TextStyle(fontWeight: FontWeight.w500,fontSize: 16.sp),
+                    style: TextStyle(fontWeight: FontWeight.w500,fontSize: 18.sp),
                   ),
                   leading: CircleAvatar(
                     backgroundImage: AssetImage("man.jpg"),
@@ -155,10 +167,10 @@ class _MechanicState extends State<Mechanic> {
                   ),
                   subtitle: Row(mainAxisAlignment: MainAxisAlignment.start,
                     children: [
-                      Column(
+                      Column(crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(_data["mechphone"] ?? "", style: TextStyle(fontSize: 14.sp),),
-                          Text("Service", style: TextStyle(fontSize: 14.sp),)
+                          Text(_data["mechphone"] ?? "", style: TextStyle(fontSize: 16.sp),),
+                          Text("Service", style: TextStyle(fontSize: 16.sp),)
                         ],
                       ),
                     ],
@@ -167,13 +179,13 @@ class _MechanicState extends State<Mechanic> {
                     Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => AdminAddMech(),
+                          builder: (context) => AdminAddMech(id:doc.id),
                         ));
                   },
                   selectedTileColor: Colors.indigo,
                 );
               },
-              itemCount: 10,
+              itemCount: mech.length,
             );
           },
         )

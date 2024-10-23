@@ -1,6 +1,7 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:miniproject/scratch.dart';
 import 'package:miniproject/user_mech.dart';
 import 'Admin/Admin_login.dart';
 import 'Admin/Admin_user_mechanic.dart';
@@ -18,6 +19,7 @@ import 'Mech/Mech_status_reject.dart';
 
 import 'Splash.dart';
 import 'User/User_failedPage.dart';
+import 'User/User_login.dart';
 import 'User/User_mechanicDetails.dart';
 import 'User/User_mechanicList.dart';
 import 'User/User_mechanic_billPage.dart';
@@ -67,7 +69,7 @@ class MyApp extends StatelessWidget {
           colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
           useMaterial3: true,
         ),
-        home:  MechSignup(),
+        home:   Splash(),
 
       ),
       designSize: Size(375,667),

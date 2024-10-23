@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -25,9 +26,20 @@ class _AdminNotificationState extends State<AdminNotification> {
 Navigator.push(context, MaterialPageRoute(builder: (context) => AdminAddNotification(),));
           },
         ),
-        body: ListView.builder(itemBuilder: (context, index) {
+        body: StreamBuilder(
+        stream: FirebaseFirestore.instance.collection("notification").snapshots(),
+    builder: (context, snapshot) {
+      if (snapshot.connectionState == ConnectionState.waiting)
+        return Center(child: CircularProgressIndicator());
+      else if (snapshot.hasError) return Text("Error ${snapshot.error}");
+      final notification = snapshot.data?.docs ?? [];
+      return
+        ListView.builder(itemBuilder: (context, index) {
+          var doc = notification[index];
+          final _data = doc.data() as Map <String,dynamic>;
           return Padding(
-            padding: const EdgeInsets.only(top: 10,bottom: 10,left: 25,right: 25),
+            padding: const EdgeInsets.only(
+                top: 10, bottom: 10, left: 25, right: 25),
             child: Card(
               child: Padding(
                 padding: const EdgeInsets.all(8.0),
@@ -36,19 +48,23 @@ Navigator.push(context, MaterialPageRoute(builder: (context) => AdminAddNotifica
                     Row(mainAxisAlignment: MainAxisAlignment.start,
                       children: [
                         Text(
-                          "Heading",
+                          _data["matter"]??"",
                           style: TextStyle(fontWeight: FontWeight.w600),
                         ),
                       ],
                     ),
                     Text(
-                        "Lorem Ipsum is a placeholder text commonly used to demonstrate the visual form of a document or a typeface without relying"),
+                        _data["content"]??""),
                   ],
                 ),
               ),
             ),
           );
-        },)
+        },
+        itemCount: notification.length,
+        );
+    }
+    )
     );
   }
 }

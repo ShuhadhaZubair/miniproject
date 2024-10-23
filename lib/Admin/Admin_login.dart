@@ -15,17 +15,20 @@ class AdminLogin extends StatefulWidget {
 
 class _AdminLoginState extends State<AdminLogin> {
   final formkey = GlobalKey<FormState>();
-  // var name = TextEditingController();
-  // var password = TextEditingController();
-//
-//   Future<void>admin_add_details() async{
-// FirebaseFirestore.instance.collection("admin").add({
-//   "name" : name.text,
-//   "password" : password.text
-// });
-// print("Login succesfull");
-// Navigator.pop(context);
-// }
+  var name =TextEditingController();
+  var password = TextEditingController();
+
+  Future<void> logindetails() async{
+    if(name.text=="admin@gmail.com" && password.text=="123") {
+      Navigator.push(context, MaterialPageRoute(builder: (context) => Admin_navigation(),));
+    }
+    else{
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Username and password error')),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -78,7 +81,7 @@ class _AdminLoginState extends State<AdminLogin> {
                     return "Invalid";
                   }
                 },
-                // controller: password,
+                controller: name,
               ),
             ),
             SizedBox(height: 20.h,),
@@ -103,7 +106,7 @@ class _AdminLoginState extends State<AdminLogin> {
                     return "Invalid";
                   }
                 },
-                // controller: password,
+                controller: password,
               ),
             ),
             SizedBox(height: 50.h,),
@@ -118,7 +121,7 @@ class _AdminLoginState extends State<AdminLogin> {
                     child: Text("Login", style: TextStyle(color: Colors.white,fontSize: 17.sp))),
               ),
               onTap: () {
-                Navigator.push(context, MaterialPageRoute(builder: (context) => Admin_navigation(),));
+                logindetails();
               },
             )
           ],

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../Admin/Admin_navigation.dart';
 import 'Mech_navigation.dart';
@@ -12,6 +13,17 @@ class MechProfile extends StatefulWidget {
 }
 
 class _MechProfileState extends State<MechProfile> {
+  Future<void> getdata()async {
+    SharedPreferences data =await SharedPreferences.getInstance();
+    final mech = data.getString("mechid");
+    print("$mech data fetched");
+  }
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    getdata();
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(

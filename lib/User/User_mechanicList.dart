@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
+import 'User_profile.dart';
+
 class UserMechaniclist extends StatefulWidget {
   const UserMechaniclist({super.key});
 
@@ -12,31 +14,7 @@ class _UserMechaniclistState extends State<UserMechaniclist> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.blue.shade100,
-        leading: Padding(
-          padding: EdgeInsets.all(10.w),
-          child: InkWell(
-            onTap: () {
-              // Navigator.push(context, MaterialPageRoute(builder: (context) => MechEditProfile(),));
-            },
-            child: CircleAvatar(
-              backgroundImage: AssetImage("Assets/man.jpg"),
-            ),
-          ),
-        ),
-        actions: [
-          Padding(
-            padding: EdgeInsets.all(10.w),
-            child: Icon(
-              Icons.notification_add,
-              color: Colors.yellow.shade800,
-            ),
-          )
-        ],
 
-        // title:
-      ),
       body: Column(
         children: [
           SizedBox(

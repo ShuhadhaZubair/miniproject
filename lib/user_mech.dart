@@ -42,8 +42,8 @@ Navigator.pop(context);
         Row(mainAxisAlignment: MainAxisAlignment.start,
           children: [
             Padding(
-              padding: const EdgeInsets.only(left: 40),
-              child: Text("Who you are",style: TextStyle(fontWeight: FontWeight.bold),),
+              padding:EdgeInsets.only(left: 40.w),
+              child: Text("Who you are",style: TextStyle(fontWeight: FontWeight.bold,fontSize: 25.sp),),
             ),
           ],
         ),
@@ -57,7 +57,7 @@ Navigator.pop(context);
                 borderRadius: BorderRadius.circular(15.r),
                 color: Colors.blue.shade900),
             child: Center(
-                child: Text("Mechanic", style: TextStyle(color: Colors.white,fontSize: 12.sp))),
+                child: Text("Mechanic", style: TextStyle(color: Colors.white,fontSize: 18.sp))),
           ),
           onTap: () {
             Navigator.push(context, MaterialPageRoute(builder: (context) =>MechLogin(),));
@@ -73,7 +73,7 @@ Navigator.pop(context);
                 borderRadius: BorderRadius.circular(15.r),
                 color: Colors.blue.shade100),
             child: Center(
-                child: Text("User", style: TextStyle(color: Colors.black,fontSize: 12.sp))),
+                child: Text("User", style: TextStyle(color: Colors.black,fontSize: 18.sp))),
           ),
           onTap: () {
             Navigator.push(context, MaterialPageRoute(builder: (context) => UserLogin(),));
@@ -83,7 +83,7 @@ Navigator.pop(context);
 
         TextButton(onPressed: () {
           Navigator.push(context, MaterialPageRoute(builder: (context) => AdminLogin(),));
-        }, child: Text("Admin Login",style: TextStyle(fontWeight: FontWeight.bold),)),
+        }, child: Text("Admin Login",style: TextStyle(fontWeight: FontWeight.bold,fontSize: 18.sp),)),
         // SizedBox(height:80.h),
 
         // InkWell(

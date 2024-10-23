@@ -1,5 +1,7 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class MechService extends StatefulWidget {
   const MechService({super.key});
@@ -9,12 +11,40 @@ class MechService extends StatefulWidget {
 }
 
 class _MechServiceState extends State<MechService> {
+  var service= TextEditingController();
+
+  String ?mech;
+
+
+  Future<void> add_service() async{
+    FirebaseFirestore.instance.collection("service").add({
+      "service" : service.text,
+      "mech_id": mech
+    });
+
+    print("service added");
+    Navigator.of(context).pop();
+  }
+  Future<void> getdata() async{
+    SharedPreferences data = await SharedPreferences.getInstance();
+    mech = data.getString("mechid");
+    print("$mech data collected");
+  }
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    getdata();
+  }
+
   void _showAlertDialog(BuildContext context) {
     // Set up the AlertDialog
     AlertDialog alert = AlertDialog(
       backgroundColor: Colors.blue.shade100,
       title: Text("Add Service"),
-      content: SizedBox(height: 100, child: TextField()),
+      content: SizedBox(height: 100, child: TextField(
+        controller: service,
+      )),
       actions: [
         Container(
           decoration: BoxDecoration(
@@ -25,7 +55,7 @@ class _MechServiceState extends State<MechService> {
             child: Center(child: Text("Add",style: TextStyle(color: Colors.white),)),
             onPressed: () {
               print("pressed");
-              Navigator.of(context).pop(); // Close the dialog
+              add_service(); // Close the dialog
             },
           ),
         )
@@ -71,80 +101,72 @@ class _MechServiceState extends State<MechService> {
           Center(
             child: Container(
                 height: 270.h,
-                width: 250.w,
+                width: 270.w,
                 decoration: BoxDecoration(
                     color: Colors.blue.shade100,
                     borderRadius: BorderRadius.circular(15)),
                 child: Padding(
                   padding: const EdgeInsets.all(20),
-                  child: Column(
-                    children: [
-                      Row(
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.only(
-                                left: 10, right: 10, top: 23),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
+                  child: StreamBuilder(
+                    stream: FirebaseFirestore.instance.collection("service").where("mech_id",isEqualTo: mech ).snapshots(),
+                    builder: (context, snapshot) {
+                      if (snapshot.connectionState == ConnectionState.waiting)
+                        return Center(child: CircularProgressIndicator());
+                      else if (snapshot.hasError)
+                        return Text("Error ${snapshot.error}");
+                      final services = snapshot.data?.docs??[];
+                      return    ListView.builder(itemBuilder: (context, index) {
+                        var doc = services[index];
+                        final _data = doc.data() as Map<String, dynamic>;
+                       return Column(
+                          children: [
+                            Row(
                               children: [
-                                Text("Tyre puncture service"),
-                                SizedBox(
-                                  height: 30.h,
+                                Padding(
+                                  padding: const EdgeInsets.only(
+                                      left: 10, right: 10, top: 23),
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Text(_data["service"]??"",style: TextStyle(fontSize: 17.sp),),
+                                      SizedBox(
+                                        height: 30.h,
+                                      ),
+
+                                    ],
+                                  ),
                                 ),
-                                Text("Engine service"),
-                                SizedBox(
-                                  height: 30.h,
-                                ),
-                                Text("A/C service"),
-                                SizedBox(
-                                  height: 30.h,
-                                ),
-                                Text("Electric service"),
-                                SizedBox(
-                                  height: 30.h,
-                                ),
+                                Padding(
+                                  padding: const EdgeInsets.all(10),
+                                  child: Column(
+                                    children: [
+                                      IconButton(
+                                        onPressed: () {
+                                          FirebaseFirestore.instance.collection("service").doc(doc.id).delete();
+                                        },
+                                        icon: Icon(Icons.delete, size: 22.sp),
+                                      ),
+                                      SizedBox(
+                                        height: 10.h,
+                                      ),
+
+                                    ],
+                                  ),
+                                )
                               ],
-                            ),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.all(10),
-                            child: Column(
-                              children: [
-                                IconButton(
-                                  onPressed: () {},
-                                  icon: Icon(Icons.delete, size: 15.sp),
-                                ),
-                                SizedBox(
-                                  height: 10.h,
-                                ),
-                                IconButton(
-                                  onPressed: () {},
-                                  icon: Icon(Icons.delete, size: 15.sp),
-                                ),
-                                SizedBox(
-                                  height: 10.h,
-                                ),
-                                IconButton(
-                                  onPressed: () {},
-                                  icon: Icon(Icons.delete, size: 15.sp),
-                                ),
-                                SizedBox(
-                                  height: 10.h,
-                                ),
-                                IconButton(
-                                  onPressed: () {},
-                                  icon: Icon(Icons.delete, size: 15.sp),
-                                ),
-                                SizedBox(
-                                  height: 10.h,
-                                ),
-                              ],
-                            ),
-                          )
-                        ],
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      )
-                    ],
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            )
+                          ],
+                        );
+
+
+
+                    },
+                        itemCount: services.length,
+
+
+                    );
+  }
                   ),
                 )),
           )

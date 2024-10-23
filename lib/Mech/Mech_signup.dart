@@ -33,9 +33,10 @@ class _MechSignupState extends State<MechSignup> {
       "statuskey" : 0,
       "profilepath" : "https://cdn-icons-png.flaticon.com/512/660/660611.png"
 
+
     });
     print("Signed Up Succesfully");
-    Navigator.pop(context);
+   Navigator.push(context, MaterialPageRoute(builder: (context) => MechNavigation(),));
   }
   @override
   Widget build(BuildContext context) {
@@ -85,9 +86,10 @@ class _MechSignupState extends State<MechSignup> {
           Padding(
             padding:EdgeInsets.only(left: 20.w, right: 20.w),
             child: TextFormField(
-              decoration: InputDecoration(fillColor: Colors.blue.shade100,filled: true,
+              decoration: InputDecoration(fillColor: Colors.blue.shade50,filled: true,
                   hintText: "Username",
-                border: InputBorder.none,
+              enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(15.r),borderSide: BorderSide.none)
+
 
                 ),
               validator: (value) {
@@ -113,10 +115,12 @@ class _MechSignupState extends State<MechSignup> {
           Padding(
             padding:EdgeInsets.only(left: 20.w, right: 20.w),
             child: TextFormField(
-              decoration: InputDecoration(fillColor: Colors.blue.shade100,filled: true,
-                  hintText: "PhoneNumber",
-                  border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(15.r))),
+              decoration: InputDecoration(
+                fillColor: Colors.blue.shade50,
+                filled: true,
+                hintText: "Phone Number",
+               border: OutlineInputBorder(borderRadius: BorderRadius.circular(15.r),borderSide: BorderSide.none) // Remove the redundant InputDecoration
+              ),
               validator: (value) {
                 if(value!.isEmpty) {
                   return "Invalid";
@@ -140,10 +144,10 @@ class _MechSignupState extends State<MechSignup> {
           Padding(
             padding:EdgeInsets.only(left: 20.w, right: 20.w),
             child: TextFormField(
-              decoration: InputDecoration(fillColor: Colors.blue.shade100,filled: true,
+              decoration: InputDecoration(fillColor: Colors.blue.shade50,filled: true,
                   hintText: "Email",
-                  border: OutlineInputBorder(borderSide: BorderSide(color: Colors.transparent),
-                      borderRadius: BorderRadius.circular(15.r))),
+                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(15.r),borderSide: BorderSide.none)
+              ),
               validator: (value) {
                 if(value!.isEmpty) {
                   return "Invalid";
@@ -167,10 +171,9 @@ class _MechSignupState extends State<MechSignup> {
           Padding(
             padding:EdgeInsets.only(left: 20.w, right: 20.w),
             child: TextFormField(
-              decoration: InputDecoration(fillColor: Colors.blue.shade100,filled: true,
+              decoration: InputDecoration(fillColor: Colors.blue.shade50,filled: true,
                   hintText: "Work Experience",
-                  border: OutlineInputBorder(borderSide: BorderSide(color: Colors.transparent),
-                      borderRadius: BorderRadius.circular(15.r))),
+                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(15.r),borderSide: BorderSide.none)),
               validator: (value) {
                 if(value!.isEmpty) {
                   return "Invalid";
@@ -193,11 +196,9 @@ class _MechSignupState extends State<MechSignup> {
           Padding(
             padding: EdgeInsets.only(left: 20.w, right: 20.w),
             child: TextFormField( controller: mechshopname,
-              decoration: InputDecoration(fillColor: Colors.blue.shade100,filled: true,
+              decoration: InputDecoration(fillColor: Colors.blue.shade50,filled: true,
                   hintText: "Workshop Name",
-                  border: OutlineInputBorder(borderSide: BorderSide(color: Colors.blue.shade100,
-                  ),
-                      borderRadius: BorderRadius.circular(15.r))),
+                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(15.r),borderSide: BorderSide.none)),
               validator: (value) {
                 if(value!.isEmpty) {
                   return "Invalid";
@@ -220,10 +221,9 @@ class _MechSignupState extends State<MechSignup> {
           Padding(
             padding:EdgeInsets.only(left: 20.w, right: 20.w),
             child: TextFormField(
-              decoration: InputDecoration(fillColor: Colors.blue.shade100,filled: true,
+              decoration: InputDecoration(fillColor: Colors.blue.shade50,filled: true,
                   hintText: "Password",
-                  border: OutlineInputBorder(borderSide: BorderSide(color: Colors.transparent),
-                      borderRadius: BorderRadius.circular(15.r))),
+                border: InputBorder.none,),
               validator: (value) {
                 if(value!.isEmpty) {
                   return "Invalid";
@@ -249,8 +249,8 @@ class _MechSignupState extends State<MechSignup> {
             child: TextFormField(
               decoration: InputDecoration(fillColor: Colors.blue.shade100,filled: true,
                   hintText: "Location",
-                  border: OutlineInputBorder(borderSide: BorderSide(color: Colors.transparent),
-                      borderRadius: BorderRadius.circular(15.r))),
+                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(15.r),borderSide: BorderSide.none)
+              ),
               validator: (value) {
                 if(value!.isEmpty) {
                   return "Invalid";
@@ -273,7 +273,10 @@ class _MechSignupState extends State<MechSignup> {
               ),
             ),
             onTap: () {
-              Navigator.push(context, MaterialPageRoute(builder: (context) => MechNavigation(),));
+              if(formkey.currentState!.validate()){
+                add_mechdetails();
+              }
+
             },
           ),
           SizedBox(height: 20.h,),
