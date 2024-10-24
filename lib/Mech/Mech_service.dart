@@ -19,7 +19,7 @@ class _MechServiceState extends State<MechService> {
   Future<void> add_service() async{
     FirebaseFirestore.instance.collection("service").add({
       "service" : service.text,
-      "mech_id": mech
+      "mech_id": mech.toString()
     });
 
     print("service added");
@@ -100,7 +100,7 @@ class _MechServiceState extends State<MechService> {
           ),
           Center(
             child: Container(
-                height: 270.h,
+                height: 500.h,
                 width: 270.w,
                 decoration: BoxDecoration(
                     color: Colors.blue.shade100,
@@ -108,7 +108,7 @@ class _MechServiceState extends State<MechService> {
                 child: Padding(
                   padding: const EdgeInsets.all(20),
                   child: StreamBuilder(
-                    stream: FirebaseFirestore.instance.collection("service").where("mech_id",isEqualTo: mech ).snapshots(),
+                    stream: FirebaseFirestore.instance.collection("service").where("mech_id",isEqualTo: mech.toString() ).snapshots(),
                     builder: (context, snapshot) {
                       if (snapshot.connectionState == ConnectionState.waiting)
                         return Center(child: CircularProgressIndicator());

@@ -1,6 +1,8 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
+import 'User_mechanicDetails.dart';
 import 'User_profile.dart';
 
 class UserMechaniclist extends StatefulWidget {
@@ -32,56 +34,70 @@ class _UserMechaniclistState extends State<UserMechaniclist> {
             ),
           ),
           Expanded(
-            child: ListView.builder(
-              itemBuilder: (context, index) {
-                return Padding(
-                  padding: const EdgeInsets.only(top: 10, left: 50, right: 50),
-                  child: InkWell(
-                    onTap: () {
-                      // Navigator.push(context, MaterialPageRoute(builder: (context) =>  MechAcceptReject(),));
-                    },
-                    child: Card(
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            child: StreamBuilder(
+    stream: FirebaseFirestore.instance.collection("mechanic").where("statuskey", isEqualTo: 1).snapshots(),
+    builder: (context, snapshot) {
+      if (snapshot.connectionState == ConnectionState.waiting)
+        return Center(child: CircularProgressIndicator());
+      else if (snapshot.hasError) return Text("Error ${snapshot.error}");
+      final mech = snapshot.data?.docs ?? [];
+      return ListView.builder(
+        itemBuilder: (context, index) {
+          var doc = mech[index];
+          final _data = doc.data() as Map<String, dynamic>;
+
+          return Padding(
+            padding: const EdgeInsets.only(top: 10, left: 50, right: 50),
+            child: InkWell(
+              onTap: () {
+                Navigator.push(context, MaterialPageRoute(builder: (context) =>  UserMechanicdetails(),));
+              },
+              child: Card(
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.only(
+                          left: 20, top: 5, bottom: 5),
+                      child: Column(
                         children: [
-                          Padding(
-                            padding: const EdgeInsets.only(
-                                left: 20, top: 5, bottom: 5),
-                            child: Column(
-                              children: [
-                                CircleAvatar(),
-                                SizedBox(
-                                  height: 10.h,
-                                ),
-                                Text("Name")
-                              ],
-                            ),
+                          CircleAvatar(),
+                          SizedBox(
+                            height: 10.h,
                           ),
-                          Padding(
-                            padding: const EdgeInsets.only(
-                                right: 20, top: 5, bottom: 5),
-                            child: Column(
-                              children: [
-                                Text("2+ years"),
-                                Text("Fuel leaking"),
-                                Container(
-                                  height: 25.h,
-                                  width: 85.w,
-                                  decoration:
-                                      BoxDecoration(color: Colors.green.shade800,borderRadius: BorderRadius.circular(15.r)),
-                                  child: Center(child: Text("Available",style: TextStyle(color: Colors.white),)),
-                                )
-                              ],
-                            ),
+                          Text(_data["mechname"]??"")
+                        ],
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(
+                          right: 20, top: 5, bottom: 5),
+                      child: Column(
+                        children: [
+                          Text(_data["mechworkexp"]??""),
+                          Text("Fuel leaking"),
+                          Container(
+                            height: 25.h,
+                            width: 85.w,
+                            decoration:
+                            BoxDecoration(color: Colors.green.shade800,
+                                borderRadius: BorderRadius.circular(15.r)),
+                            child: Center(child: Text("Available",
+                              style: TextStyle(color: Colors.white),)),
                           )
                         ],
                       ),
-                      color: Colors.blue.shade50,
-                    ),
-                  ),
-                );
-              },
-              itemCount: 3,
+                    )
+                  ],
+                ),
+                color: Colors.blue.shade50,
+              ),
+            ),
+          );
+        },
+        itemCount: mech.length,
+      );
+    }
             ),
           )
         ],

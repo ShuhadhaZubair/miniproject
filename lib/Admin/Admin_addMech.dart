@@ -18,6 +18,15 @@ class _AdminAddMechState extends State<AdminAddMech> {
         .doc(widget.id)
         .get();
   }
+  Future<void> _dataaccepted() async{
+    FirebaseFirestore.instance.collection("mechanic").doc(widget.id).update({"statuskey" : 1});
+    Navigator.pop(context);
+  }
+
+  Future<void> _datarejected() async{
+    FirebaseFirestore.instance.collection("mechanic").doc(widget.id).update({"statuskey" : 2});
+    Navigator.pop(context);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -153,23 +162,27 @@ class _AdminAddMechState extends State<AdminAddMech> {
                 SizedBox(height: 100.h,),
                 Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
-                    Container(
-                      height: 50.h,
-                      width: 120.w,
-                      decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(15.r),
-                          color: Colors.green),
-                      child: Center(
-                          child: Text("Accept", style: TextStyle(color: Colors.white,fontSize: 17.sp))),
+                    InkWell(onTap: _dataaccepted,
+                      child: Container(
+                        height: 50.h,
+                        width: 120.w,
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(15.r),
+                            color: Colors.green),
+                        child: Center(
+                            child: Text("Accept", style: TextStyle(color: Colors.white,fontSize: 17.sp))),
+                      ),
                     ),
-                    Container(
-                      height: 50.h,
-                      width: 120.w,
-                      decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(15.r),
-                          color: Colors.red),
-                      child: Center(
-                          child: Text("Reject", style: TextStyle(color: Colors.white,fontSize: 17.sp))),
+                    InkWell(onTap:_datarejected ,
+                      child: Container(
+                        height: 50.h,
+                        width: 120.w,
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(15.r),
+                            color: Colors.red),
+                        child: Center(
+                            child: Text("Reject", style: TextStyle(color: Colors.white,fontSize: 17.sp))),
+                      ),
                     ),
                   ],
                 )

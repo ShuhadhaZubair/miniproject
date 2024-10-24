@@ -1,22 +1,34 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import '../Admin/Admin_navigation.dart';
-import 'Mech_navigation.dart';
+import 'Mech_profile_edit.dart';
 
-class MechProfile extends StatefulWidget {
-  const MechProfile({super.key});
+class MechEditProfile extends StatefulWidget {
+  const MechEditProfile({super.key, this.id});
+  final id;
 
   @override
-  State<MechProfile> createState() => _MechProfileState();
+  State<MechEditProfile> createState() => _MechEditProfileState();
 }
 
-class _MechProfileState extends State<MechProfile> {
-  Future<void> getdata()async {
-    SharedPreferences data =await SharedPreferences.getInstance();
-    final mech = data.getString("mechid");
-    print("$mech data fetched");
+class _MechEditProfileState extends State<MechEditProfile> {
+
+  var mech;
+
+  DocumentSnapshot? mechp;
+  Future<void> getdata() async {
+    SharedPreferences data = await SharedPreferences.getInstance();
+    setState(() {
+      mech = data.getString("mechid");
+      print("$mech data fetched");
+    });
+
+  }
+
+  Future<void> getbyid() async {
+     mechp = await FirebaseFirestore.instance.collection("mechanic").doc(mech).get();
   }
   @override
   void initState() {
@@ -27,233 +39,250 @@ class _MechProfileState extends State<MechProfile> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: ListView(
+      body: FutureBuilder(
+        future:
+        FirebaseFirestore.instance.collection("mechanic").doc(mech).get(),
+    builder: (context, snapshot) {
+      if (snapshot.connectionState == ConnectionState.waiting)
+        return Center(child: CircularProgressIndicator());
+      else if (snapshot.hasError) return Text("Error ${snapshot.error}");
+      return ListView(
         children: [
           Row(
-            mainAxisAlignment: MainAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Padding(
-                padding: const EdgeInsets.all(20),
-                child:IconButton(onPressed: () {
-                  Navigator.pop(context);
-                }, icon: Icon(Icons.arrow_back_ios),)
+                  padding: const EdgeInsets.all(20),
+                  child: IconButton(onPressed: () {
+                    Navigator.pop(context);
+                  }, icon: Icon(Icons.arrow_back_ios),)
 
               ),
+              Padding(
+                  padding: EdgeInsets.all(20.w),
+                  child: IconButton(onPressed: () {
+                    // Navigator.push(context, MaterialPageRoute(builder: (
+                    //     context) => MechProfile(id),));
+                  }, icon: Icon(Icons.edit_calendar_sharp),)
+
+              )
             ],
           ),
           CircleAvatar(backgroundImage: AssetImage("Assets/man.jpg"),
-            radius: 40.r,
+            radius: 35.r,
           ),
           SizedBox(
             height: 50.h,
           ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              Padding(
-                padding: const EdgeInsets.only(left: 25),
-                child: Text(
-                  "Enter Username",
-                  style:
-                      TextStyle(fontWeight: FontWeight.w500, fontSize: 12.sp),
-                ),
-              ),
-            ],
-          ),
-          SizedBox(
-            height: 5.h,
-          ),
           Padding(
-            padding: const EdgeInsets.only(left: 20, right: 20),
-            child: TextFormField(
-              decoration: InputDecoration(
-fillColor: Colors.blue.shade100,
-                  filled: true,
-
-                  disabledBorder: InputBorder.none,
-                  hintText: "Username",
-                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(15.r),borderSide: BorderSide(color: Colors.transparent))),
-            ),
-          ),
-          SizedBox(
-            height: 10.h,
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              Padding(
-                padding: const EdgeInsets.only(left: 25),
-                child: Text(
-                  "Enter Phone Number",
-                  style:
-                      TextStyle(fontWeight: FontWeight.w500, fontSize: 12.sp),
-                ),
-              ),
-            ],
-          ),
-          SizedBox(
-            height: 5.h,
-          ),
-          Padding(
-            padding: const EdgeInsets.only(left: 20, right: 20),
-            child: TextFormField(
-              decoration: InputDecoration(
-                  fillColor: Colors.blue.shade100,
-                  filled: true,
-                  hintText: "PhoneNumber",
-                  border: OutlineInputBorder(
-                      borderSide: BorderSide(color: Colors.transparent),
-                      borderRadius: BorderRadius.circular(15.r))),
-            ),
-          ),
-          SizedBox(
-            height: 10.h,
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              Padding(
-                padding: const EdgeInsets.only(left: 25),
-                child: Text(
-                  "Enter your Email",
-                  style:
-                      TextStyle(fontWeight: FontWeight.w500, fontSize: 12.sp),
-                ),
-              ),
-            ],
-          ),
-          SizedBox(
-            height: 5.h,
-          ),
-          Padding(
-            padding: const EdgeInsets.only(left: 20, right: 20),
-            child: TextFormField(
-              decoration: InputDecoration(
-                  fillColor: Colors.blue.shade100,
-                  filled: true,
-                  hintText: "Email",
-                  border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(15.r),
-                      borderSide: BorderSide(color: Colors.transparent))),
-            ),
-          ),
-          SizedBox(
-            height: 10.h,
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              Padding(
-                padding: const EdgeInsets.only(left: 25),
-                child: Text(
-                  "Enter your work experience",
-                  style:
-                      TextStyle(fontWeight: FontWeight.w500, fontSize: 12.sp),
-                ),
-              ),
-            ],
-          ),
-          SizedBox(
-            height: 5.h,
-          ),
-          Padding(
-            padding: const EdgeInsets.only(left: 20, right: 20),
-            child: TextFormField(
-              decoration: InputDecoration(
-                  fillColor: Colors.blue.shade100,
-                  filled: true,
-                  hintText: "Work Experience",
-                  border: OutlineInputBorder(
-                      borderSide: BorderSide(color: Colors.transparent),
-                      borderRadius: BorderRadius.circular(15.r))),
-            ),
-          ),
-          SizedBox(
-            height: 10.h,
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              Padding(
-                padding: const EdgeInsets.only(left: 25),
-                child: Text(
-                  "Enter your workshop name",
-                  style:
-                      TextStyle(fontWeight: FontWeight.w500, fontSize: 12.sp),
-                ),
-              ),
-            ],
-          ),
-          SizedBox(
-            height: 5.h,
-          ),
-          Padding(
-            padding: const EdgeInsets.only(left: 20, right: 20),
-            child: TextFormField(
-              decoration: InputDecoration(
-                  fillColor: Colors.blue.shade100,
-                  filled: true,
-                  hintText: "Workshop Name",
-                  border: OutlineInputBorder(
-                      borderSide: BorderSide(
-                        color: Colors.blue.shade100,
-                      ),
-                      borderRadius: BorderRadius.circular(15.r))),
-            ),
-          ),
-          SizedBox(
-            height: 10.h,
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              Padding(
-                padding: const EdgeInsets.only(left: 25),
-                child: Text(
-                  "Enter Password",
-                  style:
-                      TextStyle(fontWeight: FontWeight.w500, fontSize: 12.sp),
-                ),
-              ),
-            ],
-          ),
-          SizedBox(
-            height: 5.h,
-          ),
-          Padding(
-            padding: const EdgeInsets.only(left: 20, right: 20),
-            child: TextFormField(
-              decoration: InputDecoration(
-                  fillColor: Colors.blue.shade100,
-                  filled: true,
-                  hintText: "Password",
-                  border: OutlineInputBorder(
-                      borderSide: BorderSide(color: Colors.transparent),
-                      borderRadius: BorderRadius.circular(15.r))),
-            ),
-          ),
-          SizedBox(
-            height: 20.h,
-          ),
-          InkWell(
+            padding: EdgeInsets.only(left: 25.w, right: 25.w),
             child: Container(
+              width: 250.w,
               height: 50.h,
-              width: 50.w,
               decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(15.r),
-                  color: Colors.blue.shade900),
-              child: Center(
-                  child: Text("Submit",
-                      style: TextStyle(color: Colors.white, fontSize: 17.sp))),
+                  color: Colors.blue.shade100,
+                  borderRadius: BorderRadius.circular(15.r)),
+              child: Row(mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.only(left: 20),
+                    child: Column(mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(mechp!["mechname"],
+                          style: TextStyle(fontWeight: FontWeight.w700),),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          SizedBox(height: 20.h,),
+          Padding(
+            padding: const EdgeInsets.only(left: 25, right: 25),
+            child: Container(
+              width: 250.w,
+              height: 50.h,
+              decoration: BoxDecoration(
+                  color: Colors.blue.shade100,
+                  borderRadius: BorderRadius.circular(15.r)),
+              child: Padding(
+                padding: const EdgeInsets.only(left: 10),
+                child: Row(mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.only(left: 10),
+                      child: Column(mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(mechp!["mechname"],
+                            style: TextStyle(fontWeight: FontWeight.w700),),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+          SizedBox(height: 20.h,),
+          Padding(
+            padding: const EdgeInsets.only(left: 25, right: 25),
+            child: Container(
+              width: 250.w,
+              height: 50.h,
+              decoration: BoxDecoration(
+                  color: Colors.blue.shade100,
+                  borderRadius: BorderRadius.circular(15.r)),
+              child: Padding(
+                padding: const EdgeInsets.only(left: 10),
+                child: Row(mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.only(left: 10),
+                      child: Column(mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(mechp!["mechphone"],
+                            style: TextStyle(fontWeight: FontWeight.w700),),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+          SizedBox(height: 20.h,),
+          Padding(
+            padding: const EdgeInsets.only(left: 25, right: 25),
+            child: Container(
+              width: 250.w,
+              height: 50.h,
+              decoration: BoxDecoration(
+                  color: Colors.blue.shade100,
+                  borderRadius: BorderRadius.circular(15.r)),
+              child: Padding(
+                padding: const EdgeInsets.only(left: 10),
+                child: Row(mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.only(left: 10),
+                      child: Column(mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(mechp!["mechemail"],
+                            style: TextStyle(fontWeight: FontWeight.w700),),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+          SizedBox(height: 20.h,),
+          Padding(
+            padding: const EdgeInsets.only(left: 25, right: 25),
+            child: Container(
+              width: 250.w,
+              height: 50.h,
+              decoration: BoxDecoration(
+                  color: Colors.blue.shade100,
+                  borderRadius: BorderRadius.circular(15.r)),
+              child: Padding(
+                padding: const EdgeInsets.only(left: 10),
+                child: Row(mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.only(left: 10),
+                      child: Column(mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(mechp!["mechworkexp"],
+                            style: TextStyle(fontWeight: FontWeight.w700),),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+          SizedBox(height: 20.h,),
+          Padding(
+            padding: const EdgeInsets.only(left: 25, right: 25),
+            child: Container(
+              width: 250.w,
+              height: 50.h,
+              decoration: BoxDecoration(
+                  color: Colors.blue.shade100,
+                  borderRadius: BorderRadius.circular(15.r)),
+              child: Padding(
+                padding: const EdgeInsets.only(left: 10),
+                child: Row(mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.only(left: 10),
+                      child: Column(mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(mechp!["mechlocation"],
+                            style: TextStyle(fontWeight: FontWeight.w700),),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+          SizedBox(height: 20.h,),
+          Padding(
+            padding: const EdgeInsets.only(left: 25, right: 25),
+            child: Container(
+              width: 250.w,
+              height: 50.h,
+              decoration: BoxDecoration(
+                  color: Colors.blue.shade100,
+                  borderRadius: BorderRadius.circular(15.r)),
+              child: Padding(
+                padding: const EdgeInsets.only(left: 10),
+                child: Row(mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.only(left: 10),
+                      child: Column(mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(mechp!["mechshopname"],
+                            style: TextStyle(fontWeight: FontWeight.w700),),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+          SizedBox(height: 50.h,),
+          InkWell(
+            child: Padding(
+              padding: const EdgeInsets.only(left: 100, right: 100),
+              child: Container(
+                height: 50.h,
+                width: 200.w,
+                decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(15.r),
+                    color: Colors.blue.shade900),
+                child: Center(
+                    child: Text("Done", style: TextStyle(color: Colors.white,
+                        fontSize: 17.sp))),
+              ),
             ),
             onTap: () {
-              Navigator.push(context, MaterialPageRoute(builder: (context) => MechNavigation(),));
+              Navigator.pop(context);
             },
           ),
-          SizedBox(
-            height: 20.h,
-          ),
+          SizedBox(height: 10.h,),
+
         ],
+      );
+    }
       ),
     );
   }

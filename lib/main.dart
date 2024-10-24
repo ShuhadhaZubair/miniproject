@@ -6,11 +6,11 @@ import 'package:miniproject/user_mech.dart';
 import 'Admin/Admin_login.dart';
 import 'Admin/Admin_user_mechanic.dart';
 import 'Mech/Mech_accept_reject.dart';
-import 'Mech/Mech_edit_profile.dart';
+import 'Mech/Mech_profile.dart';
 import 'Mech/Mech_home.dart';
 import 'Mech/Mech_login.dart';
 import 'Mech/Mech_navigation.dart';
-import 'Mech/Mech_profile.dart';
+import 'Mech/Mech_profile_edit.dart';
 import 'Mech/Mech_rating.dart';
 import 'Mech/Mech_service.dart';
 import 'Mech/Mech_signup.dart';
@@ -69,7 +69,7 @@ class MyApp extends StatelessWidget {
           colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
           useMaterial3: true,
         ),
-        home:   Splash(),
+        home:   UserMechaniclist(),
 
       ),
       designSize: Size(375,667),

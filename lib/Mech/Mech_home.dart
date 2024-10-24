@@ -5,7 +5,7 @@ import 'package:miniproject/Admin/Admin_user_mechanic.dart';
 import 'package:miniproject/Mech/Mech_notification.dart';
 
 import 'Mech_accept_reject.dart';
-import 'Mech_edit_profile.dart';
+import 'Mech_profile.dart';
 import 'Mech_status_complete.dart';
 
 class MechHome extends StatefulWidget {
